@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyGTP – Блог</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--black:#0a0a0a;--orange:#f97316;--orange-dark:#c45c0e;--white:#f5f5f0;--gray:#161616;--gray2:#1f1f1f;--muted:#666;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#fff;color:#111;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #1a1a1a;background:#0a0a0a;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+  .logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .logo-box{width:36px;height:36px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  .logo-box svg{width:20px;height:20px;fill:white;}
+  .logo-text{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.3px;color:#fff;}
+  .logo-text span{color:var(--orange);}
+  .nav-right{display:flex;gap:8px;}
+  .btn-login{padding:8px 16px;border:1px solid #2a2a2a;border-radius:50px;background:transparent;color:#aaa;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .btn-login:hover{border-color:#f97316;color:#f97316;}
+  .btn-start{padding:8px 18px;background:var(--orange);border:none;border-radius:50px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.2s;}
+  .btn-start:hover{opacity:0.9;}
+  .btn-blog{padding:8px 18px;border:1px solid #333;border-radius:50px;background:transparent;color:#ccc;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;letter-spacing:0.2px;}
+  .btn-blog:hover{border-color:#f97316;color:#f97316;}
+  .btn-blog.active{border-color:#f97316;color:#f97316;}
+
+  /* VIEWS */
+  #view-list{display:block;}
+  #view-article{display:none;}
+  .page{max-width:480px;margin:0 auto;padding-bottom:80px;background:#fff;}
+
+  /* BLOG HEADER */
+  .blog-header{padding:24px 20px 18px;border-bottom:1px solid #e8e8e8;background:#fff;}
+  .blog-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .label-line{width:20px;height:1px;background:var(--orange);}
+  .blog-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:900;line-height:1.1;margin-bottom:6px;letter-spacing:-0.5px;color:#111;}
+  .blog-sub{font-size:13px;color:#888;line-height:1.5;}
+
+  /* SEARCH */
+  .search-wrap{padding:14px 20px;border-bottom:1px solid #e8e8e8;position:relative;background:#fff;}
+  .search-input{width:100%;background:#f7f7f7;border:1px solid #e0e0e0;border-radius:10px;color:#111;font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color 0.2s;letter-spacing:0.1px;}
+  .search-input:focus{border-color:var(--orange);}
+  .search-input::placeholder{color:#bbb;}
+
+  /* CATEGORIES */
+  .cats{display:flex;gap:6px;overflow-x:auto;padding:12px 20px;border-bottom:1px solid #e8e8e8;scrollbar-width:none;background:#fff;}
+  .cats::-webkit-scrollbar{display:none;}
+  .cat-pill{flex-shrink:0;padding:6px 16px;border-radius:4px;border:1px solid #e0e0e0;background:transparent;color:#666;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+  .cat-pill.active{background:var(--orange);border-color:var(--orange);color:white;}
+  .cat-pill:hover:not(.active){border-color:#bbb;color:#333;}
+
+  /* FEATURED */
+  .featured-wrap{padding:16px 20px 0;}
+  .featured-card{background:#fff;border:1px solid #e8e8e8;border-top:3px solid var(--orange);border-radius:4px;padding:22px;cursor:pointer;transition:border-color 0.2s;animation:fadeUp 0.3s ease both;}
+  .featured-card:hover{border-color:var(--orange);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .feat-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:12px;}
+  .feat-cat{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-bottom:8px;}
+  .feat-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1.2;margin-bottom:10px;letter-spacing:-0.3px;color:#111;}
+  .feat-excerpt{font-size:13px;color:#555;line-height:1.6;margin-bottom:18px;}
+  .feat-bottom{display:flex;align-items:center;justify-content:space-between;}
+  .feat-meta{font-size:11px;color:#aaa;letter-spacing:0.3px;}
+  .feat-btn{background:var(--orange);border:none;border-radius:4px;color:white;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:9px 18px;cursor:pointer;transition:opacity 0.2s;}
+  .feat-btn:hover{opacity:0.9;}
+
+  /* SECTION HEADER */
+  .sec-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px;background:#fff;}
+  .sec-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;}
+  .sec-count{font-size:11px;color:#bbb;}
+
+  /* ARTICLE CARDS */
+  .articles-wrap{padding:0 20px;background:#fff;}
+  .article-card{display:flex;gap:0;align-items:stretch;background:#fff;border:1px solid #e8e8e8;border-radius:4px;margin-bottom:8px;cursor:pointer;transition:border-color 0.2s;overflow:hidden;animation:fadeUp 0.3s ease both;}
+  .article-card:hover{border-color:var(--orange);}
+  .card-accent{width:3px;flex-shrink:0;background:#e8e8e8;transition:background 0.2s;}
+  .article-card:hover .card-accent{background:var(--orange);}
+  .card-inner{padding:14px 16px;flex:1;min-width:0;}
+  .card-cat{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:5px;}
+  .card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;line-height:1.3;margin-bottom:5px;color:#111;}
+  .card-excerpt{font-size:12px;color:#666;line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .card-bottom{display:flex;align-items:center;gap:10px;}
+  .card-date{font-size:11px;color:#aaa;letter-spacing:0.3px;}
+
+  .badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:2px;}
+  .b-hot{background:rgba(249,115,22,0.1);color:var(--orange);border:1px solid rgba(249,115,22,0.3);}
+  .b-new{background:#f5f5f5;color:#666;border:1px solid #ddd;}
+  .b-law{background:#f5f5f5;color:#666;border:1px solid #ddd;}
+
+  .no-res{text-align:center;padding:48px 20px;display:none;background:#fff;}
+  .no-res.show{display:block;}
+  .no-res p{font-size:14px;color:#aaa;}
+
+  /* ARTICLE PAGE */
+  .art-page{max-width:480px;margin:0 auto;padding-bottom:80px;}
+
+  .back-btn{display:flex;align-items:center;gap:8px;padding:14px 20px;border-bottom:1px solid #e5e5e5;cursor:pointer;color:#888;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;background:#fff;border-top:none;border-left:none;border-right:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;transition:color 0.2s;}
+  .back-btn:hover{color:var(--orange);}
+  .back-btn span{font-size:16px;line-height:1;}
+
+  .art-hero{padding:24px 20px 22px;border-bottom:1px solid #e8e8e8;background:#fff;}
+  .art-cat{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .art-cat::after{content:'';flex:1;height:1px;background:#e8e8e8;}
+  .art-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:900;line-height:1.15;margin-bottom:14px;letter-spacing:-0.5px;color:#111;}
+  .art-meta{display:flex;gap:20px;font-size:11px;color:#999;margin-bottom:18px;letter-spacing:0.3px;text-transform:uppercase;}
+  .art-lead{font-size:15px;color:#444;line-height:1.7;padding:16px 18px;background:#fff8f4;border-left:3px solid var(--orange);}
+
+  /* ARTICLE BODY */
+  .art-body{padding:24px 20px 0;background:#fff;}
+  .art-body h2{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin:28px 0 12px;color:#111;letter-spacing:-0.2px;padding-bottom:8px;border-bottom:1px solid #ebebeb;}
+  .art-body h2:first-child{margin-top:0;}
+  .art-body p{font-size:14px;color:#333;line-height:1.8;margin-bottom:14px;}
+  .art-body strong{color:#111;font-weight:700;}
+  .art-body ul{list-style:none;margin-bottom:16px;background:#fafafa;border:1px solid #ebebeb;border-radius:4px;overflow:hidden;}
+  .art-body ul li{display:flex;gap:12px;font-size:13px;color:#333;padding:11px 14px;border-bottom:1px solid #ebebeb;line-height:1.5;}
+  .art-body ul li:last-child{border:none;}
+  .art-body ul li::before{content:"—";color:var(--orange);flex-shrink:0;font-weight:700;}
+
+  .warn-box{background:#fff5f5;border:1px solid #fdd;border-left:3px solid #c0392b;border-radius:0 4px 4px 0;padding:14px 16px;margin:16px 0;}
+  .warn-box p{font-size:13px;color:#7a2020;margin:0;line-height:1.6;}
+  .warn-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c0392b;margin-bottom:6px;}
+
+  .tip-box{background:#f5fbf5;border:1px solid #d4edda;border-left:3px solid #27ae60;border-radius:0 4px 4px 0;padding:14px 16px;margin:16px 0;}
+  .tip-box p{font-size:13px;color:#1a5c2e;margin:0;line-height:1.6;}
+  .tip-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#27ae60;margin-bottom:6px;}
+
+  /* CTA */
+  .art-cta{margin:24px 20px;background:var(--orange);border-radius:4px;padding:24px;text-align:center;}
+  .art-cta h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;margin-bottom:6px;color:white;letter-spacing:-0.3px;}
+  .art-cta p{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:18px;line-height:1.5;}
+  .cta-big{display:block;width:100%;background:white;border:none;border-radius:4px;color:var(--orange);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:13px;cursor:pointer;transition:opacity 0.2s;}
+  .cta-big:hover{opacity:0.92;}
+
+  /* RELATED */
+  .related{padding:0 20px;background:#fff;padding-bottom:8px;}
+  .related-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:14px;display:flex;align-items:center;gap:10px;padding-top:4px;}
+  .related-label::after{content:'';flex:1;height:1px;background:#e8e8e8;}
+  .rel-card{display:flex;gap:0;align-items:stretch;background:#fff;border:1px solid #e8e8e8;border-radius:4px;margin-bottom:8px;cursor:pointer;transition:border-color 0.2s;overflow:hidden;}
+  .rel-card:hover{border-color:var(--orange);}
+  .rel-accent{width:3px;flex-shrink:0;background:var(--orange);}
+  .rel-inner{padding:12px 14px;flex:1;}
+  .rel-inner h4{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:3px;color:#111;}
+  .rel-inner p{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="showList()">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+    </div>
+    <div class="logo-text">Easy<span>GTP</span></div>
+  </div>
+  <div class="nav-right">
+    <button class="btn-blog" onclick="window.location='blog.html'">Блог</button>
+    <button class="btn-login">Вход</button>
+    <button class="btn-start">Започни</button>
+  </div>
+</nav>
+
+<!-- LIST VIEW -->
+<div id="view-list">
+  <div class="page">
+    <div class="blog-header">
+      <div class="blog-label"><span class="label-line"></span>2025 — 2026</div>
+      <div class="blog-title">Блог и Статии</div>
+      <div class="blog-sub">Всичко за ГТП, закони, документи и автомобили в България</div>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search-input" id="searchInput" placeholder="Търси статия по заглавие или тема..." oninput="applyFilters()">
+    </div>
+
+    <div class="cats">
+      <button class="cat-pill active" onclick="filterCat('всички',this)">Всички</button>
+      <button class="cat-pill" onclick="filterCat('ГТП',this)">ГТП</button>
+      <button class="cat-pill" onclick="filterCat('Закони',this)">Закони</button>
+      <button class="cat-pill" onclick="filterCat('Документи',this)">Документи</button>
+      <button class="cat-pill" onclick="filterCat('Безопасност',this)">Безопасност</button>
+      <button class="cat-pill" onclick="filterCat('Мотори',this)">Мотори</button>
+      <button class="cat-pill" onclick="filterCat('Съвети',this)">Съвети</button>
+    </div>
+
+    <div class="featured-wrap" id="featuredWrap"></div>
+    <div class="sec-header">
+      <div class="sec-title">Всички статии</div>
+      <div class="sec-count" id="secCount"></div>
+    </div>
+    <div class="articles-wrap" id="articlesList"></div>
+    <div class="no-res" id="noRes"><p>Няма намерени статии за търсения термин.</p></div>
+  </div>
+</div>
+
+<!-- ARTICLE VIEW -->
+<div id="view-article">
+  <div class="art-page">
+    <button class="back-btn" onclick="showList()"><span>&#8592;</span> Обратно към блога</button>
+    <div id="articleContent"></div>
+  </div>
+</div>
+
+<script>
+const GTP_CHECK_URL = 'https://rta.government.bg/services/check-inspection/index.html';
+
+const ARTICLES = [
+  {
+    id:0, category:'Съвети', badges:['hot'],
+    title:'Провери автомобила преди лятото и дългото пътуване',
+    date:'26.05.2026', readTime:'4 мин',
+    excerpt:'Лятото изпитва автомобила до краен предел. Тези проверки преди тръгване ще ви спестят неприятности по пътя.',
+    lead:'Преди да натовариш багажника и тръгнеш на дълго пътуване, направи тези задължителни проверки — ще избегнеш скъпи изненади в неподходящ момент.',
+    sections:[
+      {h:'Защо лятото е натоварващо за автомобила',p:'Високите температури натоварват охладителната система, гумите и акумулатора. Статистически пробивите на гуми са с около 30% повече през летните месеци заради нагретия асфалт.'},
+      {h:'Задължителни проверки преди тръгване',list:['Охладителна течност — ниво и концентрация на антифриза','Гуми — налягане и дебелина на протектора (минимум 1.6 мм)','Акумулатор — при над 3 години препоръчва се проверка на капацитета','Климатик — работи ли и охлажда ли достатъчно','Всички светлини — фарове, стопове, мигачи, габарити','Спирачни накладки — визуална проверка за износване','Чистачки и ниво на течността за стъкла']},
+      {h:'Не забравяй ГТП и застраховката',p:'Преди дълго пътуване провери дали ГТП и застраховка Гражданска отговорност не изтичат преди планирания ти завръщане. Проверката по регистрационен номер е безплатна на официалния сайт на ИА Автомобилна администрация.'}
+    ],
+    warn:'При температури над 35°C проверявай налягането на гумите всяка сутрин — горещият асфалт го увеличава значително.',
+    tip:'Пренасяй винаги авариен комплект: триъгълник, светлоотразителна жилетка, буксирно въже и запасна крушка.',
+    related:[1,4,5]
+  },
+  {
+    id:1, category:'Мотори', badges:['new'],
+    title:'Мото сезон 2026 е открит — готов ли е твоят мотор',
+    date:'02.05.2026', readTime:'4 мин',
+    excerpt:'Преди първото излизане на сезона направи задължителните проверки по тази контролна листа.',
+    lead:'Мотосезон 2026 е официално открит. Но преди да изкараш мотора от гаража, направи задължителните проверки за безопасност.',
+    sections:[
+      {h:'Защо е важна проверката след зимния престой',p:'Мотоциклетите стоят неизползвани с месеци. Гумите губят налягане, горивото се разваля, спирачните течности абсорбират влага. Пропуснатите проблеми могат да са животозастрашаващи.'},
+      {h:'Контролна листа за начало на сезона',list:['Гуми — налягане, дебелина на протектора, проверка за напукване на страничните стени','Спирачки — ниво на течността, дискове и накладки','Акумулатор — зареди напълно или смени при нужда','Гориво — изпразни старото или добави стабилизатор','Верига — почисти, смажи и провери опъването','Всички светлини','Документи — талон, застраховка ГО, ГТП']},
+      {h:'ГТП на мотоциклети',p:'Мотоциклетите над 50 куб.см подлежат на годишен технически преглед. Провери срока предварително чрез официалната система на ИА Автомобилна администрация.'}
+    ],
+    warn:'Не яздете с пълна скорост веднага след зимния престой — гумите трябва да се затоплят постепенно.',
+    tip:'Смяната на спирачната течност на всеки 2 години е задължителна дори без видимо влошаване на характеристиките.',
+    related:[0,5,8]
+  },
+  {
+    id:2, category:'Закони', badges:['new','law'],
+    title:'Нови правила за аптечката при пътуване в Гърция от юни 2026',
+    date:'22.04.2026', readTime:'3 мин',
+    excerpt:'От 18 юни 2026 се променят изискванията за съдържанието на аптечката в автомобила при пътуване до Гърция.',
+    lead:'Ако планирате пътуване до Гърция тази година, запознайте се с новите изисквания за аптечката — глобите при проверка на пътя са сериозни.',
+    sections:[
+      {h:'Какво се промени от юни 2026',p:'От 18 юни 2026 Гърция въвежда обновени стандарти за съдържанието на аптечката в автомобила. Промените са свързани с европейска хармонизация на изискванията за пътна безопасност.'},
+      {h:'Задължително съдържание на аптечката',list:['Ръкавици — минимум 2 чифта','Лепенки и бинтове от различни размери','Ножица и пинсета','Аналгетик (ибупрофен или парацетамол)','Малко фенерче','Инструкция за първа помощ на английски или гръцки']},
+      {h:'Глоби при несъответствие',p:'Гръцката пътна полиция редовно проверява аптечките при произшествия и при рутинни проверки. Глобата за несъответстваща аптечка може да достигне 350 евро.'}
+    ],
+    warn:'Проверете срока на годност на всички продукти в аптечката преди пътуване — изтекли медикаменти водят до глоба.',
+    tip:'По-евтино е да купите нова готова аптечка отговаряща на изискванията, отколкото да платите глоба на гръцката полиция.',
+    related:[6,7,0]
+  },
+  {
+    id:3, category:'Закони', badges:['hot','law'],
+    title:'Конституционният съд отмени проверката за неплатени глоби при ГТП',
+    date:'22.02.2026', readTime:'4 мин',
+    excerpt:'КС обяви за противоконституционно изискването автомобил да не може да мине ГТП при наличие на неплатени глоби.',
+    lead:'Важна новина за всички шофьори: Конституционният съд на България отмени спорната разпоредба, изискваща автомобилът да няма неплатени глоби преди технически преглед.',
+    sections:[
+      {h:'Какво реши Конституционният съд',p:'С решение от февруари 2026 г. КС обяви за противоконституционно изискването техническият преглед да се извършва само при липса на неплатени глоби. Съдът прие, че ограничението е несъразмерно и нарушава правата на гражданите.'},
+      {h:'Какво означава на практика',p:'От датата на решението автомобил с неплатени глоби може да премине ГТП без пречки. Задълженията към КАТ и общините остават в сила — решението само премахва блокировката за техническия преглед.'},
+      {h:'Задълженията трябва да се платят',p:'Решението на КС не освобождава от задълженията. При продължително неплащане се начислява лихва и задълженията могат да бъдат предадени за принудително събиране.'}
+    ],
+    warn:'Решението на КС не освобождава от задължението за плащане на глоби — само премахва блокировката при ГТП.',
+    tip:'Проверете текущите задължения към КАТ онлайн на e-uslugi.mvr.bg с ЕГН и номер на шофьорска книжка.',
+    related:[4,6,12]
+  },
+  {
+    id:4, category:'Закони', badges:['hot','law'],
+    title:'Данък МПС за 2026 — важна информация преди ГТП',
+    date:'25.01.2026', readTime:'3 мин',
+    excerpt:'Платеният данък МПС е условие за преминаване на ГТП. Ето сроковете и начините за плащане.',
+    lead:'Януари е месецът за данък МПС. Без платен данък не можете да преминете ГТП — запознайте се с актуалните условия за 2026.',
+    sections:[
+      {h:'Краен срок и отстъпка',p:'Данъкът върху превозните средства за 2026 трябва да се плати до <strong>31 март 2026 г.</strong> При плащане до тази дата се ползва отстъпка от 5% от дължимата сума.'},
+      {h:'Начини за плащане',list:['Онлайн на сайта на съответната община','В банка или пощенски клон','На ePay.bg с дебитна или кредитна карта','На гишето в общинската администрация','Чрез мобилното приложение на общината']},
+      {h:'Връзката между данъка и ГТП',p:'Преди технически преглед служителят проверява в системата дали данък МПС е платен. При неплатен данък прегледът се отказва. Плащането се отразява в системата в рамките на 1 работен ден.'}
+    ],
+    warn:'При неплатен данък МПС прегледът се отказва. Платете поне 1 работен ден преди да отидете на пункта.',
+    tip:'При плащане до 31 март спестявате 5% от данъка — за средностатистически автомобил това са около 10 до 20 лева.',
+    related:[3,9,11]
+  },
+  {
+    id:5, category:'ГТП', badges:['hot','new'],
+    title:'Стикерите за ГТП официално отпаднаха от 2026',
+    date:'20.01.2026', readTime:'3 мин',
+    excerpt:'От началото на 2026 стикерите за технически преглед са премахнати. Системата е изцяло дигитална.',
+    lead:'Край на хартиените стикери за технически преглед. От 2026 цялата информация се съхранява в централизирана електронна база данни.',
+    sections:[
+      {h:'Какво се промени от 2026',p:'От 1 януари 2026 стикерите за ГТП, залепвани на предното стъкло, официално отпаднаха. Информацията за техническия преглед вече се съхранява изцяло в базата данни на Изпълнителна агенция Автомобилна администрация.'},
+      {h:'Как проверява КАТ без стикер',p:'Пътната полиция проверява статуса на ГТП директно в електронната система по регистрационен номер. Проверката е мигновена от всеки патрулен автомобил.'},
+      {h:'Как да проверите самостоятелно',p:'Проверката на ГТП по регистрационен номер е безплатна на официалния сайт на ИА Автомобилна администрация. Резултатът се показва за секунди.'}
+    ],
+    warn:'Липсата на физически стикер не означава освобождаване от задължението за ГТП. Системата следи срока автоматично.',
+    tip:'Настройте напомняне 7 до 14 дни преди изтичане на ГТП за да не бъдете изненадани.',
+    related:[9,10,4]
+  },
+  {
+    id:6, category:'Закони', badges:['hot'],
+    title:'Камери за средна скорост — как работят и защо са по-ефективни',
+    date:'10.12.2025', readTime:'4 мин',
+    excerpt:'Камерите за средна скорост измерват скоростта на целия участък, не само в един момент. Ето как работят.',
+    lead:'За разлика от традиционните камери, системите за средна скорост измерват средната скорост на целия участък между два контролни пункта.',
+    sections:[
+      {h:'Принцип на действие',p:'Системата засича автомобила при влизане в участъка и при излизане. Средната скорост се изчислява по формулата разстояние/време. При надвишаване на лимита се генерира автоматичен фиш.'},
+      {h:'Защо са по-ефективни от традиционните камери',p:'При обичайните камери шофьорите спират пред камерата и ускоряват след нея. При системите за средна скорост цялото разстояние трябва да се измине в рамките на лимита — ефектът върху безопасността е значително по-голям.'},
+      {h:'Как се получава фишът',p:'Фишът се генерира автоматично при надвишаване на средната скорост и се изпраща по пощата до адреса от регистрацията в рамките на 14 дни.'}
+    ],
+    warn:'Забавянето пред камерата и ускоряването след нея не работи при системите за средна скорост.',
+    tip:'Навигационните приложения Waze и Google Maps маркират участъците с камери за средна скорост.',
+    related:[3,4,12]
+  },
+  {
+    id:7, category:'Закони', badges:['new','law'],
+    title:'Нискоемисионни зони в София от декември 2025',
+    date:'30.11.2025', readTime:'4 мин',
+    excerpt:'От 1 декември 2025 влязоха в сила зимни нискоемисионни зони в София. Кои автомобили са засегнати?',
+    lead:'София въведе зимни нискоемисионни зони от декември 2025. Ето кои автомобили не могат да влизат и какви са санкциите.',
+    sections:[
+      {h:'Кои зони са засегнати',p:'Нискоемисионните зони обхващат централната градска част на София. Границите са обозначени с пътни знаци и са отразени в навигационните приложения.'},
+      {h:'Кои автомобили имат ограничение',list:['Бензинови автомобили с екологична категория по-ниска от Евро 3','Дизелови автомобили с категория по-ниска от Евро 4','Автомобили без документирана екологична категория','Електромобили и хибриди — без ограничение','Евро 5 и Евро 6 — без ограничение']},
+      {h:'Как да проверите категорията на вашия автомобил',p:'Екологичната категория е вписана в свидетелството за регистрация на МПС — поле V.7. Може да се провери и онлайн по регистрационен номер.'}
+    ],
+    warn:'Глобата за навлизане в нискоемисионна зона без право е от 200 до 500 лева.',
+    tip:'Проверете полето V.7 в талона на автомобила — там е записана екологичната категория.',
+    related:[3,6,8]
+  },
+  {
+    id:8, category:'Документи', badges:['hot'],
+    title:'Голям талон на автомобила — пълна легенда на полетата',
+    date:'17.10.2025', readTime:'5 мин',
+    excerpt:'Свидетелството за регистрация съдържа над 20 полета с данни. Ето какво означава всяко едно от тях.',
+    lead:'Пълна легенда на данните в свидетелството за регистрация на МПС — полезна при ГТП, застраховане и проверка за нискоемисионни зони.',
+    sections:[
+      {h:'Предна страна — основни данни',list:['A — Регистрационен номер на МПС','B — Дата на първа регистрация','C.1 — Собственик на превозното средство','D.1 — Марка на производителя','D.2 — Тип и вариант','E — Идентификационен номер на МПС (VIN/рамен номер)','F.1 — Максимална технически допустима маса','G — Маса в готовност за движение','J — Категория на МПС']},
+      {h:'Задна страна — технически данни',list:['P.1 — Работен обем на двигателя в куб.см','P.2 — Максимална мощност в kW','P.3 — Вид на горивото','S.1 — Брой места включително мястото на водача','V.7 — Екологична категория (Euro 3, Euro 5 и т.н.)','V.9 — Специфични емисии на CO2 в g/km']},
+      {h:'Защо е важно да познавате талона',p:'Данните в свидетелството за регистрация са необходими при ГТП, при прехвърляне на собствеността, при проверка за нискоемисионни зони и при сключване на застраховка. Несъответствие между данните и реалното техническо състояние може да доведе до проблеми при преглед.'}
+    ],
+    warn:'При промяна на технически данни (смяна на двигател, реконструкция) трябва да актуализирате свидетелството за регистрация в КАТ.',
+    tip:'Направете снимка на двете страни на талона и я запазете дигитално — при загуба процедурата за нов е по-лесна.',
+    related:[9,4,5]
+  },
+  {
+    id:9, category:'Документи', badges:['hot'],
+    title:'Технически преглед — необходими документи и подготовка',
+    date:'14.07.2025', readTime:'3 мин',
+    excerpt:'Какви документи да носите на ГТП и как да се подготвите за да не се върнете без успешен преглед.',
+    lead:'Пълно ръководство за подготовка за годишен технически преглед — документи, технически проверки и практически съвети.',
+    sections:[
+      {h:'Задължителни документи',list:['Свидетелство за регистрация на МПС — задължително оригинал, не копие','Застраховка Гражданска отговорност — трябва да е валидна','Лична карта на собственика','Платен данък МПС за текущата година','Технически преглед на пожарогасителя при наличие']},
+      {h:'При фирмени автомобили',p:'При фирмен автомобил управляван от лице различно от собственика е необходимо нотариално заверено пълномощно или служебно удостоверение от работодателя.'},
+      {h:'Технически проверки преди пункта',p:'Проверете светлините, гумите, спирачките и нивата на течностите предварително. Дребните пропуснати неща водят до незапочнат преглед и допълнителна такса за повторен.'}
+    ],
+    warn:'Без оригинален талон и валидна застраховка Гражданска отговорност прегледът не може да се извърши.',
+    tip:'Дойдете сутринта в началото на работното време — по-малко опашки и по-бързо обслужване.',
+    related:[8,5,10]
+  },
+  {
+    id:10, category:'ГТП', badges:['hot'],
+    title:'ГТП след срока — рискове, глоби и как да нормализирате ситуацията',
+    date:'31.07.2025', readTime:'3 мин',
+    excerpt:'Какво се случва при просрочен ГТП — санкции, рискове при инцидент и правилни стъпки за решение.',
+    lead:'Пропуснали сте срока за ГТП? Не предприемайте прибързани действия — ето точно какви са последствията и как да решите ситуацията правилно.',
+    sections:[
+      {h:'Правен риск при просрочен ГТП',p:'Шофирането с просрочен ГТП е административно нарушение. При проверка от КАТ следва глоба и задължение за незабавно спиране от движение до представяне на документ за ГТП.'},
+      {h:'Размер на глобите',p:'Глобата за шофиране с просрочен ГТП е от <strong>50 до 200 лева</strong> за физически лица. При повторно нарушение в рамките на 1 година глобата се удвоява.'},
+      {h:'Правилни стъпки при просрочен ГТП',list:['Не карайте колата сами до пункта за ГТП — рискувате допълнителна глоба','Запазете час онлайн или по телефон предварително','Подгответе всички необходими документи','При лоши гуми или светлини отстранете проблемите преди прегледа','Ако колата не е в движение — организирайте транспорт или влекач']}
+    ],
+    warn:'При пътен инцидент с просрочен ГТП застрахователят може да откаже или намали изплащането на обезщетение.',
+    tip:'Настройте напомняне 30 дни преди изтичане за да имате достатъчно гъвкавост при избор на пункт и час.',
+    related:[5,9,4]
+  },
+  {
+    id:11, category:'Безопасност', badges:['new','law'],
+    title:'Изисквания за пожарогасителя в автомобила от 2025',
+    date:'12.09.2025', readTime:'3 мин',
+    excerpt:'От февруари 2025 влязоха в сила обновени изисквания за пожарогасителя. Проверете дали вашият е в норма.',
+    lead:'Пожарогасителят в колата вече е обект на по-строги стандарти. Проверете дали вашият отговаря на изискванията преди следващия ГТП.',
+    sections:[
+      {h:'Актуалните изисквания от 2025',p:'От февруари 2025 г. пожарогасителите в автомобилите трябва да отговарят на актуализирания стандарт. Изисква се минимум <strong>1 кг прах тип ABC</strong> с валиден технически преглед на самия уред.'},
+      {h:'Срок за технически преглед на пожарогасителя',p:'Пожарогасителите подлежат на технически преглед на всеки <strong>2 години</strong>. Датата на последния преглед е отбелязана на стикер върху уреда. При изтекъл срок или видима повреда уредът е негоден.'},
+      {h:'Какво се проверява при ГТП',p:'При технически преглед служителят проверява наличието, вида и срока на пожарогасителя. При несъответствие прегледът завършва като незапочнат.'}
+    ],
+    warn:'Пожарогасител с изтекъл преглед е равносилен на липсващ при ГТП — прегледът завършва неуспешно.',
+    tip:'Обслужването в оторизиран сервиз за пожарогасители отнема около 10 минути и е значително по-евтино от такса за повторен ГТП.',
+    related:[9,16,0]
+  },
+  {
+    id:12, category:'ГТП', badges:['new','law'],
+    title:'30 дни за отстраняване на повреди при незапочнат ГТП',
+    date:'24.09.2025', readTime:'3 мин',
+    excerpt:'При незапочнат ГТП поради технически нередности вече имате 30 дни за безплатен повторен преглед.',
+    lead:'Нова наредба дава 30-дневен срок за отстраняване на констатирани нередности при незапочнат ГТП. Ето как да се възползвате.',
+    sections:[
+      {h:'Какво се промени',p:'От септември 2025 г. при незапочнат ГТП поради технически нередности, собственикът получава <strong>30-дневен срок</strong> за тяхното отстраняване. В рамките на срока повторният преглед за констатираните проблеми е безплатен.'},
+      {h:'Как да се възползвате от правото',p:'При незапочнат ГТП получавате документ с описание на констатираните проблеми. Отстранете ги и се върнете в <strong>същия пункт</strong> в рамките на 30 дни за безплатен повторен преглед.'},
+      {h:'Какво не включва безплатният преглед',p:'Повторният безплатен преглед обхваща само констатираните при първия преглед нередности. При установяване на нови проблеми те се проверяват по стандартната тарифа на пункта.'}
+    ],
+    warn:'30-те дни текат от датата на незапочнатия ГТП. Пазете внимателно документа с констатациите от пункта.',
+    tip:'Отстранявайте проблемите бързо след незапочнатия преглед — по-лесно е да се върнете в срока отколкото да плащате нов преглед.',
+    related:[10,9,5]
+  },
+  {
+    id:13, category:'ГТП', badges:['hot'],
+    title:'Проверките за неплатени глоби при ГТП — хронология и актуално положение',
+    date:'09.09.2025', readTime:'4 мин',
+    excerpt:'Законът за проверка на глоби при ГТП беше приет, сезиран и отменен от КС. Ето цялата история.',
+    lead:'Историята около проверките за неплатени глоби при ГТП e показателна за скоростта на законодателните промени. Ето пълната хронология.',
+    sections:[
+      {h:'Хронология на събитията',list:['Септември 2025 — Парламентът приема закон за задължителна проверка на глоби при ГТП','Ноември 2025 — Опозицията и граждански организации сезират Конституционния съд','Февруари 2026 — КС обявява разпоредбата за противоконституционна','Март 2026 — Законът официално се отменя и системата се връща към стария ред']},
+      {h:'Актуалното правно положение',p:'Към момента няма законово изискване за платени глоби при преминаване на ГТП. КС прие, че такова изискване е несъразмерно ограничение на правото на свободно движение.'},
+      {h:'Задълженията остават в сила',p:'Решението на КС не освобождава от финансовите задължения. Неплатените глоби продължават да се натрупват с лихви и при продължително неплащане се предават за принудително събиране от ЧСИ.'}
+    ],
+    warn:'Неплатените глоби не изчезват след решението на КС — само вече не блокират техническия преглед.',
+    tip:'Направете редовна проверка на задълженията си на e-uslugi.mvr.bg за да избегнете неприятни изненади.',
+    related:[3,4,6]
+  },
+  {
+    id:14, category:'ГТП', badges:['new'],
+    title:'Еко-стикерите отпаднаха — какво реши ВАС и как се промени системата',
+    date:'02.09.2025', readTime:'3 мин',
+    excerpt:'ВАС отмени наредбата за залепване на еко-стикери на предното стъкло. Системата вече е изцяло дигитална.',
+    lead:'Върховният административен съд сложи край на практиката с цветните еко-стикери на стъклото. Ето как работи системата след решението.',
+    sections:[
+      {h:'Решението на ВАС',p:'Върховният административен съд отмени наредбата, задължаваща залепването на цветен еко-стикер на предното стъкло на автомобила. Съдът прие, че наредбата е незаконосъобразна и противоречи на по-висши нормативни актове.'},
+      {h:'Как работи системата след отмяната',p:'Вместо физически стикер, екологичната категория на автомобила се проверява в електронната система по регистрационен номер. Данните са достъпни в реално време за КАТ, общинската охрана и камерите в нискоемисионните зони.'},
+      {h:'Какво да правите ако имате стар стикер',p:'Старите еко-стикери могат да се премахнат от стъклото без никакво уведомяване. Данните за екологичната категория са записани в системата и не изчезват при премахване на стикера.'}
+    ],
+    warn:'Отсъствието на физически стикер не означава освобождаване от изискванията на нискоемисионните зони.',
+    tip:'Проверете екологичната категория в свидетелството за регистрация — поле V.7 на задната страна.',
+    related:[7,8,5]
+  },
+  {
+    id:15, category:'Документи', badges:[],
+    title:'Изгубен талон от технически преглед — стъпки за дубликат',
+    date:'15.08.2025', readTime:'3 мин',
+    excerpt:'Загубили сте документа от ГТП? Ето точните стъпки за получаване на дубликат без излишен стрес.',
+    lead:'Загубването на свидетелството от годишния технически преглед не е сериозен проблем — ето как бързо да получите нов документ.',
+    sections:[
+      {h:'Важна бележка от 2026',p:'От 2026 г. информацията за техническия преглед е записана в централизираната електронна система на ИА Автомобилна администрация. При КАТ проверка пътната полиция може да провери статуса по регистрационен номер без физически документ.'},
+      {h:'Стъпки за получаване на дубликат',list:['Свържете се с пункта, в който е направен прегледът','Предоставете регистрационния номер и приблизителната дата на прегледа','Заплатете таксата за издаване на дубликат','Получете новия документ на място или по имейл в PDF формат']},
+      {h:'При КАТ проверка без документ',p:'Пътната полиция проверява статуса на ГТП директно в електронната система по регистрационен номер. Физическият документ не е задължителен при проверка на пътя от 2026 г.'}
+    ],
+    warn:'Без валиден ГТП в системата следва глоба независимо дали имате хартиен документ или не. Проверявайте срока редовно.',
+    tip:'Снимайте важни документи и ги съхранявайте дигитално — при загуба цифровото копие помага при идентификация.',
+    related:[9,8,10]
+  },
+  {
+    id:16, category:'Безопасност', badges:['new'],
+    title:'Пожарогасител в колата — техническо обслужване и изисквания',
+    date:'01.09.2025', readTime:'4 мин',
+    excerpt:'Пожарогасителят е задължителен в автомобила — но само ако е правилно обслужен и годен за употреба.',
+    lead:'Пожарогасителят е задължителна część от оборудването на всеки автомобил. Ето какви са изискванията за обслужване и какво проверяват при ГТП.',
+    sections:[
+      {h:'Видове пожарогасители подходящи за автомобили',list:['Прахови тип ABC — най-разпространени, подходящи за повечето видове пожари','CO2 — подходящи за електрически автомобили и електроника','Пенни — по-рядко срещани в МПС']},
+      {h:'Срокове за задължително обслужване',p:'Всички пожарогасители подлежат на технически преглед на всеки <strong>2 години</strong>. Обслужването включва проверка на налягането, клапаните и съдържанието. При изтекъл срок уредът се счита за негоден.'},
+      {h:'Какво се извършва при обслужване',p:'Оторизираният сервиз проверява налягането, уплътненията и клапаните. При съответствие поставя нов стикер с дата на следващо обслужване. Процедурата отнема около 10-15 минути.'}
+    ],
+    warn:'Пожарогасител с изтекъл технически преглед се счита за негоден при ГТП — прегледът завършва неуспешно.',
+    tip:'Поставете пожарогасителя на достъпно място в купето или багажника, не под багажа — трябва да се достига бързо.',
+    related:[11,9,0]
+  }
+];
+
+const GTP_URL = 'https://rta.government.bg/services/check-inspection/index.html';
+let activeFilter = 'всички';
+let searchTerm = '';
+
+function filterCat(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  renderList();
+}
+
+function getFiltered() {
+  return ARTICLES.filter(t => {
+    const matchCat = activeFilter === 'всички' || t.category === activeFilter;
+    const matchSearch = !searchTerm ||
+      t.title.toLowerCase().includes(searchTerm) ||
+      t.excerpt.toLowerCase().includes(searchTerm) ||
+      t.category.toLowerCase().includes(searchTerm);
+    return matchCat && matchSearch;
+  });
+}
+
+function badgeTag(b) {
+  const map = { hot:['b-hot','Популярна'], new:['b-new','Ново'], law:['b-law','Закон'] };
+  return map[b] ? `<span class="badge ${map[b][0]}">${map[b][1]}</span>` : '';
+}
+
+function renderList() {
+  const filtered = getFiltered();
+  const featured = filtered[0];
+  const rest = filtered.slice(1);
+  const fw = document.getElementById('featuredWrap');
+
+  if (featured) {
+    const bHTML = (featured.badges||[]).map(b => badgeTag(b)).join('');
+    fw.innerHTML = `
+      <div class="featured-card" onclick="openArticle(${featured.id})">
+        <div class="feat-label">Препоръчана статия</div>
+        <div class="feat-cat">${featured.category}</div>
+        <div class="feat-title">${featured.title}</div>
+        <div class="feat-excerpt">${featured.excerpt}</div>
+        <div class="feat-bottom">
+          <span class="feat-meta">${featured.date} &nbsp;·&nbsp; ${featured.readTime} четене</span>
+          <button class="feat-btn">Прочети</button>
+        </div>
+      </div>`;
+  } else fw.innerHTML = '';
+
+  document.getElementById('secCount').textContent = `${filtered.length} статии`;
+  const noRes = document.getElementById('noRes');
+  if (rest.length === 0 && !featured) {
+    document.getElementById('articlesList').innerHTML = '';
+    noRes.classList.add('show'); return;
+  }
+  noRes.classList.remove('show');
+
+  document.getElementById('articlesList').innerHTML = rest.map((t, i) => {
+    const bHTML = (t.badges||[]).map(b => badgeTag(b)).join('');
+    return `
+    <div class="article-card" style="animation-delay:${i * 0.03}s" onclick="openArticle(${t.id})">
+      <div class="card-accent"></div>
+      <div class="card-inner">
+        <div class="card-cat">${t.category}</div>
+        <div class="card-title">${t.title}</div>
+        <div class="card-excerpt">${t.excerpt}</div>
+        <div class="card-bottom">
+          <span class="card-date">${t.date}</span>
+          ${bHTML}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openArticle(id) {
+  const t = ARTICLES.find(x => x.id === id);
+  if (!t) return;
+
+  const sectHTML = (t.sections||[]).map(s => {
+    let h = s.h ? `<h2>${s.h}</h2>` : '';
+    let p = s.p ? `<p>${s.p}</p>` : '';
+    let list = s.list ? `<ul>${s.list.map(li => `<li>${li}</li>`).join('')}</ul>` : '';
+    return h + p + list;
+  }).join('');
+
+  const warnHTML = t.warn ? `
+    <div class="warn-box">
+      <div class="warn-label">Внимание</div>
+      <p>${t.warn}</p>
+    </div>` : '';
+
+  const tipHTML = t.tip ? `
+    <div class="tip-box">
+      <div class="tip-label">Съвет</div>
+      <p>${t.tip}</p>
+    </div>` : '';
+
+  const relHTML = (t.related||[]).map(rid => {
+    const r = ARTICLES.find(x => x.id === rid);
+    if (!r) return '';
+    return `
+      <div class="rel-card" onclick="openArticle(${r.id})">
+        <div class="rel-accent"></div>
+        <div class="rel-inner">
+          <h4>${r.title}</h4>
+          <p>${r.category} &nbsp;·&nbsp; ${r.date}</p>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('articleContent').innerHTML = `
+    <div class="art-hero">
+      <div class="art-cat">${t.category}</div>
+      <h1 class="art-title">${t.title}</h1>
+      <div class="art-meta">
+        <span>${t.date}</span>
+        <span>${t.readTime} четене</span>
+      </div>
+      <div class="art-lead">${t.lead}</div>
+    </div>
+    <div class="art-body">
+      ${sectHTML}
+      ${warnHTML}
+      ${tipHTML}
+    </div>
+    <div class="art-cta">
+      <h3>Провери ГТП на колата си</h3>
+      <p>Официална безплатна проверка по регистрационен номер чрез системата на ИА Автомобилна администрация.</p>
+      <button class="cta-big" onclick="window.open('${GTP_URL}','_blank')">Провери ГТП официално</button>
+    </div>
+    <div class="related">
+      <div class="related-label">Свързани статии</div>
+      ${relHTML}
+    </div>`;
+
+  document.getElementById('view-list').style.display = 'none';
+  document.getElementById('view-article').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function showList() {
+  document.getElementById('view-list').style.display = 'block';
+  document.getElementById('view-article').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+renderList();
+</script>
+</body>
+</html>

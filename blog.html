@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог и новини - EasyGTP</title>
+    <title>Блог и актуални новини - EasyGTP</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --badge-bg: #eff6ff;
-            --badge-text: #1d4ed8;
+            --bg-dark: #0a0a0a;
+            --card-bg: #141414;
+            --border-color: #262626;
+            --primary-orange: #ff6600;
+            --primary-orange-hover: #e55c00;
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            --badge-bg: rgba(255, 102, 0, 0.1);
         }
 
         * {
@@ -25,18 +24,19 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
             line-height: 1.6;
         }
 
         /* Навигация */
         header {
-            background: var(--card-bg);
+            background: rgba(10, 10, 10, 0.95);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .nav-container {
@@ -51,8 +51,15 @@
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--text-main);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--primary-orange);
         }
 
         .nav-links {
@@ -64,43 +71,52 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--text-main);
+            color: var(--text-muted);
             font-weight: 500;
             transition: color 0.2s;
+            font-size: 0.95rem;
         }
 
         .nav-links a:hover, .nav-links a.active {
-            color: var(--primary);
+            color: var(--primary-orange);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
         }
 
         .btn {
-            background: var(--primary);
+            background: var(--primary-orange);
             color: white;
             padding: 0.5rem 1.25rem;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: background 0.2s;
             border: none;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .btn:hover {
-            background: var(--primary-dark);
+            background: var(--primary-orange-hover);
         }
 
         .btn-outline {
             background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
         }
 
         .btn-outline:hover {
-            background: var(--badge-bg);
-            color: var(--primary-dark);
+            border-color: var(--primary-orange);
+            color: var(--primary-orange);
+            background: transparent;
         }
 
-        /* Главен контейнер на блога */
+        /* Главен контейнер */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -118,6 +134,7 @@
             font-size: 2.5rem;
             margin-bottom: 1rem;
             color: var(--text-main);
+            letter-spacing: -0.5px;
         }
 
         .blog-hero p {
@@ -125,7 +142,7 @@
             font-size: 1.1rem;
         }
 
-        /* Търсене и филтри */
+        /* Търсене и филтри (Водещи към статии чрез anchor `#id`) */
         .blog-filters {
             display: flex;
             justify-content: space-between;
@@ -149,10 +166,11 @@
             font-size: 0.95rem;
             outline: none;
             background: var(--card-bg);
+            color: var(--text-main);
         }
 
         .search-box input:focus {
-            border-color: var(--primary);
+            border-color: var(--primary-orange);
         }
 
         .categories {
@@ -170,25 +188,29 @@
             cursor: pointer;
             transition: all 0.2s;
             color: var(--text-muted);
+            text-decoration: none;
         }
 
         .category-btn.active, .category-btn:hover {
-            background: var(--primary);
+            background: var(--primary-orange);
             color: white;
-            border-color: var(--primary);
+            border-color: var(--primary-orange);
         }
 
         /* Водеща статия */
         .featured-article {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.2fr 0.8fr;
             margin-bottom: 3rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
+            transition: border-color 0.2s;
+        }
+
+        .featured-article:hover {
+            border-color: #404040;
         }
 
         .featured-content {
@@ -201,14 +223,15 @@
         .badge {
             display: inline-block;
             background: var(--badge-bg);
-            color: var(--badge-text);
+            color: var(--primary-orange);
             padding: 0.25rem 0.75rem;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 1rem;
             width: fit-content;
+            border: 1px solid rgba(255, 102, 0, 0.2);
         }
 
         .meta {
@@ -229,13 +252,14 @@
         }
 
         .featured-image {
-            background: #e2e8f0;
+            background: #1f1f1f;
             min-height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-muted);
             font-weight: 500;
+            border-left: 1px solid var(--border-color);
         }
 
         /* Списък със статии (Grid) */
@@ -249,27 +273,27 @@
         .article-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, border-color 0.2s;
         }
 
         .article-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: #404040;
         }
 
         .article-img-placeholder {
             height: 180px;
-            background: #f1f5f9;
+            background: #1f1f1f;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-muted);
             font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .article-body {
@@ -293,7 +317,7 @@
         }
 
         .read-more {
-            color: var(--primary);
+            color: var(--primary-orange);
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
@@ -306,10 +330,10 @@
             text-decoration: underline;
         }
 
-        /* Бюлетин / Абонамент секция */
+        /* Бюлетин */
         .newsletter-section {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
+            background: linear-gradient(135deg, #141414 0%, #1f1f1f 100%);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 3rem 2rem;
             text-align: center;
@@ -322,7 +346,7 @@
         }
 
         .newsletter-section p {
-            color: #94a3b8;
+            color: var(--text-muted);
             max-width: 500px;
             margin: 0 auto 2rem auto;
             font-size: 1rem;
@@ -342,17 +366,16 @@
             min-width: 250px;
             padding: 0.75rem 1rem;
             border-radius: 8px;
-            border: 1px solid #475569;
-            background: #334155;
+            border: 1px solid var(--border-color);
+            background: #0a0a0a;
             color: white;
             outline: none;
         }
 
-        .newsletter-form input::placeholder {
-            color: #94a3b8;
+        .newsletter-form input:focus {
+            border-color: var(--primary-orange);
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .featured-article {
                 grid-template-columns: 1fr;
@@ -368,25 +391,27 @@
 </head>
 <body>
 
-    <!-- Навигация -->
+    <!-- Навигация с линкове към официалния сайт и Lovable приложението -->
     <header>
         <div class="nav-container">
-            <a href="#" class="logo">EasyGTP</a>
+            <a href="https://359cargo.com" class="logo">Easy<span>GTP</span></a>
             <ul class="nav-links">
-                <li><a href="#">Начало</a></li>
-                <li><a href="#">Функционалности</a></li>
-                <li><a href="#">Защо EasyGTP</a></li>
-                <li><a href="#" class="active">Блог</a></li>
-                <li><a href="#">Контакти</a></li>
+                <li><a href="https://359cargo.com/#start">Старт</a></li>
+                <li><a href="https://359cargo.com/#features">Функционалности</a></li>
+                <li><a href="https://359cargo.com/#why">Защо EasyGTP</a></li>
+                <li><a href="https://359cargo.com/blog" class="active">Блог</a></li>
+                <li><a href="https://359cargo.com/#contact">Контакти</a></li>
             </ul>
-            <div style="display: flex; gap: 0.75rem;">
-                <a href="#" class="btn btn-outline">Вход</a>
-                <a href="#" class="btn">Безплатен тест</a>
+            <div class="nav-actions">
+                <!-- Заменете с реалния линк към вашето Lovable приложение за вход -->
+                <a href="https://YOUR-LOVABLE-APP-URL.lovable.app/login" class="btn btn-outline">Вход</a>
+                <!-- Заменете с реалния линк към вашето Lovable приложение за регистрация -->
+                <a href="https://YOUR-LOVABLE-APP-URL.lovable.app/register" class="btn">Регистрация</a>
             </div>
         </div>
     </header>
 
-    <!-- Основен контейнер -->
+    <!-- Главен контейнер -->
     <div class="container">
 
         <!-- Хедър на блога -->
@@ -395,24 +420,24 @@
             <p>Всичко за новите наредби, дигитализацията на пунктовете, автоматичните SMS напомняния и как да управлявате бизнеса си по-ефективно с EasyGTP.</p>
         </section>
 
-        <!-- Търсачка и категории -->
+        <!-- Категории и филтри, водещи директно до съответните секции/статии -->
         <div class="blog-filters">
             <div class="search-box">
                 <input type="text" placeholder="Търсене на статии, теми, закони...">
             </div>
             <div class="categories">
-                <button class="category-btn active">Всички</button>
-                <button class="category-btn">Закони и наредби</button>
-                <button class="category-btn">Съвети за бизнеса</button>
-                <button class="category-btn">Нови функционалности</button>
-                <button class="category-btn">Технически новини</button>
+                <a href="#all" class="category-btn active">Всички</a>
+                <a href="#article-law" class="category-btn">Закони и наредби</a>
+                <a href="#article-business" class="category-btn">Съвети за бизнеса</a>
+                <a href="#article-features" class="category-btn">Нови функционалности</a>
+                <a href="#article-tech" class="category-btn">Технически новини</a>
             </div>
         </div>
 
-        <!-- Водеща статия -->
-        <div class="featured-article">
+        <!-- Водеща статия (Закони и наредби) -->
+        <div id="article-law" class="featured-article">
             <div class="featured-content">
-                <span class="badge">В центъра на вниманието</span>
+                <span class="badge">🔥 В центъра на вниманието</span>
                 <div class="meta">5 октомври 2026 • 6 мин. четене • Категория: Закони и наредби</div>
                 <h2>Какви нови изисквания към ГТП пунктовете да очакваме през 2026 година?</h2>
                 <p>Пълен преглед на промените в законодателството, свързани с контрола на техническите прегледи, видео наблюдението и връзката с контролните органи. Научете как да подготвите пункта си навреме.</p>
@@ -423,14 +448,14 @@
             </div>
         </div>
 
-        <!-- Списък с публикации (Grid) -->
+        <!-- Списък със статии (Grid) -->
         <div class="articles-grid">
             
-            <!-- Статия 1 -->
-            <article class="article-card">
+            <!-- Статия 1 (Нови функционалности) -->
+            <article id="article-features" class="article-card">
                 <div class="article-img-placeholder">[ Снимка статия ]</div>
                 <div class="article-body">
-                    <span class="badge" style="width: fit-content; margin-bottom: 0.5rem;">Ново</span>
+                    <span class="badge" style="margin-bottom: 0.5rem;">Ново</span>
                     <div class="meta">28 септември 2026 • 4 мин. четене</div>
                     <h3>Автоматични SMS напомняния: Как да намалите пропуснатите часове с 40%?</h3>
                     <p>Клиентите забравят кога им изтича прегледът. Вижте как автоматизираните известия от EasyGTP връщат шофьорите обратно във вашия пункт точно навреме.</p>
@@ -438,11 +463,11 @@
                 </div>
             </article>
 
-            <!-- Статия 2 -->
-            <article class="article-card">
+            <!-- Статия 2 (Съвети за бизнеса) -->
+            <article id="article-business" class="article-card">
                 <div class="article-img-placeholder">[ Снимка статия ]</div>
                 <div class="article-body">
-                    <span class="badge" style="width: fit-content; margin-bottom: 0.5rem; background: #fef3c7; color: #b45309;">Съвети</span>
+                    <span class="badge" style="margin-bottom: 0.5rem;">Съвети</span>
                     <div class="meta">15 септември 2026 • 5 мин. четене</div>
                     <h3>5 грешки при управлението на ГТП пункт и как да ги избегнете</h3>
                     <p>Ръчното попълване на дневници и хартиените архиви отдавна отминаха. Разберете кои са най-честите административни грешки и как софтуерът ги елиминира напълно.</p>
@@ -450,11 +475,11 @@
                 </div>
             </article>
 
-            <!-- Статия 3 -->
-            <article class="article-card">
+            <!-- Статия 3 (Технически новини) -->
+            <article id="article-tech" class="article-card">
                 <div class="article-img-placeholder">[ Снимка статия ]</div>
                 <div class="article-body">
-                    <span class="badge" style="width: fit-content; margin-bottom: 0.5rem; background: #e0f2fe; color: #0369a1;">Технологии</span>
+                    <span class="badge" style="margin-bottom: 0.5rem;">Технологии</span>
                     <div class="meta">2 септември 2026 • 3 мин. четене</div>
                     <h3>Бърза интеграция с апаратурата: Защо съвременният ГТП софтуер спестява време</h3>
                     <p>Директното четене на данни от измервателните уреди ускорява прегледа и премахва риска от грешки при ръчно въвеждане. Вижте какво да изисквате от системата си.</p>

@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог и актуални новини - EasyGTP</title>
+    <title>Блог за ГТП софтуер и закони 2026 | Автоматични SMS напомняния - EasyGTP</title>
+    <meta name="description" content="Актуални новини, закони за ГТП пунктове през 2026 г., софтуерни решения и как да увеличите клиентите си с автоматични SMS напомняния от EasyGTP.">
+    <meta name="keywords" content="ГТП софтуер, софтуер за ГТП пунктове, SMS напомняния ГТП, закони ГТП 2026, EasyGTP, Автокомплекс Групкар с.Труд">
     <style>
         :root {
             --bg-dark: #0a0a0a;
@@ -26,7 +28,7 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         /* Навигация */
@@ -81,44 +83,9 @@
             color: var(--primary-orange);
         }
 
-        .nav-actions {
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
-        }
-
-        .btn {
-            background: var(--primary-orange);
-            color: white;
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .btn:hover {
-            background: var(--primary-orange-hover);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary-orange);
-            color: var(--primary-orange);
-            background: transparent;
-        }
-
         /* Главен контейнер */
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 3rem 2rem;
         }
@@ -126,7 +93,7 @@
         /* Хедър на блога */
         .blog-hero {
             text-align: center;
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto 3rem auto;
         }
 
@@ -139,85 +106,27 @@
 
         .blog-hero p {
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
         }
 
-        /* Търсене и филтри (Водещи към статии чрез anchor `#id`) */
-        .blog-filters {
+        /* Списък със статии (без полета за снимки) */
+        .articles-list {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-            gap: 1rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 2.5rem;
+            margin-bottom: 4rem;
         }
 
-        .search-box {
-            position: relative;
-            flex: 1;
-            min-width: 280px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            outline: none;
-            background: var(--card-bg);
-            color: var(--text-main);
-        }
-
-        .search-box input:focus {
-            border-color: var(--primary-orange);
-        }
-
-        .categories {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-muted);
-            text-decoration: none;
-        }
-
-        .category-btn.active, .category-btn:hover {
-            background: var(--primary-orange);
-            color: white;
-            border-color: var(--primary-orange);
-        }
-
-        /* Водеща статия */
-        .featured-article {
+        .article-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            margin-bottom: 3rem;
+            padding: 2.5rem;
             transition: border-color 0.2s;
         }
 
-        .featured-article:hover {
+        .article-card:hover {
             border-color: #404040;
-        }
-
-        .featured-content {
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
         .badge {
@@ -230,7 +139,6 @@
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 1rem;
-            width: fit-content;
             border: 1px solid rgba(255, 102, 0, 0.2);
         }
 
@@ -240,94 +148,32 @@
             margin-bottom: 0.75rem;
         }
 
-        .featured-content h2 {
-            font-size: 1.75rem;
+        .article-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .article-card h3 {
+            font-size: 1.4rem;
             margin-bottom: 1rem;
             color: var(--text-main);
         }
 
-        .featured-content p {
+        .article-card p {
             color: var(--text-muted);
-            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
         }
 
-        .featured-image {
-            background: #1f1f1f;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .article-card ul {
+            margin: 1rem 0 1.5rem 1.5rem;
             color: var(--text-muted);
-            font-weight: 500;
-            border-left: 1px solid var(--border-color);
         }
 
-        /* Списък със статии (Grid) */
-        .articles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .article-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .article-card:hover {
-            transform: translateY(-4px);
-            border-color: #404040;
-        }
-
-        .article-img-placeholder {
-            height: 180px;
-            background: #1f1f1f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .article-body {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .article-body h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-main);
-        }
-
-        .article-body p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-            flex: 1;
-        }
-
-        .read-more {
-            color: var(--primary-orange);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .read-more:hover {
-            text-decoration: underline;
+        .article-card li {
+            margin-bottom: 0.5rem;
         }
 
         /* Бюлетин */
@@ -337,7 +183,6 @@
             border-radius: 16px;
             padding: 3rem 2rem;
             text-align: center;
-            margin-bottom: 3rem;
         }
 
         .newsletter-section h2 {
@@ -376,115 +221,103 @@
             border-color: var(--primary-orange);
         }
 
+        .btn {
+            background: var(--primary-orange);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-orange-hover);
+        }
+
         @media (max-width: 768px) {
-            .featured-article {
-                grid-template-columns: 1fr;
-            }
             .nav-links {
                 display: none;
             }
             .blog-hero h1 {
                 font-size: 2rem;
             }
+            .article-card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Навигация с линкове към официалния сайт и Lovable приложението -->
+    <!-- Навигация (Логото води към 359cargoo.com, без вход/регистрация) -->
     <header>
         <div class="nav-container">
-            <a href="https://359cargo.com" class="logo">Easy<span>GTP</span></a>
+            <a href="https://359cargoo.com" class="logo">Easy<span>GTP</span></a>
             <ul class="nav-links">
-                <li><a href="https://359cargo.com/#start">Старт</a></li>
-                <li><a href="https://359cargo.com/#features">Функционалности</a></li>
-                <li><a href="https://359cargo.com/#why">Защо EasyGTP</a></li>
-                <li><a href="https://359cargo.com/blog" class="active">Блог</a></li>
-                <li><a href="https://359cargo.com/#contact">Контакти</a></li>
+                <li><a href="https://359cargoo.com/#start">Старт</a></li>
+                <li><a href="https://359cargoo.com/#features">Функционалности</a></li>
+                <li><a href="https://359cargoo.com/#why">Защо EasyGTP</a></li>
+                <li><a href="#" class="active">Блог</a></li>
+                <li><a href="https://359cargoo.com/#contact">Контакти</a></li>
             </ul>
-            <div class="nav-actions">
-                <!-- Заменете с реалния линк към вашето Lovable приложение за вход -->
-                <a href="https://YOUR-LOVABLE-APP-URL.lovable.app/login" class="btn btn-outline">Вход</a>
-                <!-- Заменете с реалния линк към вашето Lovable приложение за регистрация -->
-                <a href="https://YOUR-LOVABLE-APP-URL.lovable.app/register" class="btn">Регистрация</a>
-            </div>
         </div>
     </header>
 
     <!-- Главен контейнер -->
     <div class="container">
 
-        <!-- Хедър на блога -->
+        <!-- Хедър на блога с мощно SEO насочване -->
         <section class="blog-hero">
-            <h1>Блог и актуални новини за ГТП бранша</h1>
-            <p>Всичко за новите наредби, дигитализацията на пунктовете, автоматичните SMS напомняния и как да управлявате бизнеса си по-ефективно с EasyGTP.</p>
+            <h1>Блог за ГТП софтуер, закони и дигитализация на пунктове</h1>
+            <p>Всичко най-важно за управлението на пунктове за годишни технически прегледи през 2026 г., актуални наредби и как автоматичните SMS напомняния повишават печалбата ви.</p>
         </section>
 
-        <!-- Категории и филтри, водещи директно до съответните секции/статии -->
-        <div class="blog-filters">
-            <div class="search-box">
-                <input type="text" placeholder="Търсене на статии, теми, закони...">
-            </div>
-            <div class="categories">
-                <a href="#all" class="category-btn active">Всички</a>
-                <a href="#article-law" class="category-btn">Закони и наредби</a>
-                <a href="#article-business" class="category-btn">Съвети за бизнеса</a>
-                <a href="#article-features" class="category-btn">Нови функционалности</a>
-                <a href="#article-tech" class="category-btn">Технически новини</a>
-            </div>
-        </div>
-
-        <!-- Водеща статия (Закони и наредби) -->
-        <div id="article-law" class="featured-article">
-            <div class="featured-content">
-                <span class="badge">🔥 В центъра на вниманието</span>
-                <div class="meta">5 октомври 2026 • 6 мин. четене • Категория: Закони и наредби</div>
-                <h2>Какви нови изисквания към ГТП пунктовете да очакваме през 2026 година?</h2>
-                <p>Пълен преглед на промените в законодателството, свързани с контрола на техническите прегледи, видео наблюдението и връзката с контролните органи. Научете как да подготвите пункта си навреме.</p>
-                <a href="#" class="read-more">Прочетете цялата статия &rarr;</a>
-            </div>
-            <div class="featured-image">
-                [ Илюстрация към водещата статия ]
-            </div>
-        </div>
-
-        <!-- Списък със статии (Grid) -->
-        <div class="articles-grid">
+        <!-- Списък с актуални статии (без изображения) -->
+        <div class="articles-list">
             
-            <!-- Статия 1 (Нови функционалности) -->
-            <article id="article-features" class="article-card">
-                <div class="article-img-placeholder">[ Снимка статия ]</div>
-                <div class="article-body">
-                    <span class="badge" style="margin-bottom: 0.5rem;">Ново</span>
-                    <div class="meta">28 септември 2026 • 4 мин. четене</div>
-                    <h3>Автоматични SMS напомняния: Как да намалите пропуснатите часове с 40%?</h3>
-                    <p>Клиентите забравят кога им изтича прегледът. Вижте как автоматизираните известия от EasyGTP връщат шофьорите обратно във вашия пункт точно навреме.</p>
-                    <a href="#" class="read-more">Прочетете повече &rarr;</a>
-                </div>
+            <!-- Статия 1: Успешен клиент (Автокомплекс Групкар) -->
+            <article class="article-card">
+                <span class="badge">Успешен клиент</span>
+                <div class="meta">6 октомври 2026 • 4 мин. четене</div>
+                <h2>Автокомплекс „Групкар“ (с. Труд) избра софтуера на EasyGTP за над 5000 клиента годишно</h2>
+                <p>Един от най-насeлените и модерни автокомплекси в региона – <strong>Автокомплекс Групкар</strong>, разположен в с. Труд, официално се довери на платформата <strong>EasyGTP</strong> за цялостно управление на своите клиенти и график.</p>
+                <p>С над 5000 обслужвани превозни средства годишно, екипът на Групкар се нуждаеше от бърза, сигурна и напълно автоматизирана система, която да елиминира бумащината. Благодарение на интегрираните автоматични SMS напомняния и интелигентната CRM система на EasyGTP, пунктът гарантира, че нито един клиент няма да пропусне датата за своя следващ годишен технически преглед.</p>
             </article>
 
-            <!-- Статия 2 (Съвети за бизнеса) -->
-            <article id="article-business" class="article-card">
-                <div class="article-img-placeholder">[ Снимка статия ]</div>
-                <div class="article-body">
-                    <span class="badge" style="margin-bottom: 0.5rem;">Съвети</span>
-                    <div class="meta">15 септември 2026 • 5 мин. четене</div>
-                    <h3>5 грешки при управлението на ГТП пункт и как да ги избегнете</h3>
-                    <p>Ръчното попълване на дневници и хартиените архиви отдавна отминаха. Разберете кои са най-честите административни грешки и как софтуерът ги елиминира напълно.</p>
-                    <a href="#" class="read-more">Прочетете повече &rarr;</a>
-                </div>
+            <!-- Статия 2: Основна фокусна статия за SMS напомнянията -->
+            <article class="article-card">
+                <span class="badge">Топ софтуерна функция</span>
+                <div class="meta">4 октомври 2026 • 5 мин. четене</div>
+                <h2>Защо автоматичните SMS напомняния от EasyGTP са задължителни за всеки ГТП пункт през 2026?</h2>
+                <p>Конкуренцията в бранша е сериозна, а най-ценният ресурс за всеки собственик на пункт за годишни технически прегледи е времето и лоялността на клиентите. Ръчното звънене по телефона или разчитането на хората сами да се сетят кога им изтича прегледът остава в миналото.</p>
+                <h3>Как работи системата?</h3>
+                <p>Софтуерът <strong>EasyGTP</strong> следи изтичащите срокове на прегледите в реално време и изпраща персонализирани SMS известия до шофьорите точно навреме. Ползите за бизнеса са доказани:</p>
+                <ul>
+                    <li><strong>До 40% по-малко пропуснати часове</strong> и празни коридори в пункта.</li>
+                    <li><strong>Автоматично връщане на клиентите</strong> година след година без административен труд.</li>
+                    <li><strong>Повишено доверие и професионализъм</strong> в очите на шофьорите.</li>
+                </ul>
             </article>
 
-            <!-- Статия 3 (Технически новини) -->
-            <article id="article-tech" class="article-card">
-                <div class="article-img-placeholder">[ Снимка статия ]</div>
-                <div class="article-body">
-                    <span class="badge" style="margin-bottom: 0.5rem;">Технологии</span>
-                    <div class="meta">2 септември 2026 • 3 мин. четене</div>
-                    <h3>Бърза интеграция с апаратурата: Защо съвременният ГТП софтуер спестява време</h3>
-                    <p>Директното четене на данни от измервателните уреди ускорява прегледа и премахва риска от грешки при ръчно въвеждане. Вижте какво да изисквате от системата си.</p>
-                    <a href="#" class="read-more">Прочетете повече &rarr;</a>
-                </div>
+            <!-- Статия 3: Закони и изисквания 2026 -->
+            <article class="article-card">
+                <span class="badge">Закони и наредби</span>
+                <div class="meta">1 октомври 2026 • 6 мин. четене</div>
+                <h2>Нови изисквания към ГТП пунктовете през 2026 г.: Как да подготвим пункта си?</h2>
+                <p>През 2026 година нормативната рамка продължава да се дигитализира с акцент върху стриктния контрол на техническите прегледи, видео наблюдението и автоматизирания обмен на данни с държавните регистри.</p>
+                <p>За да работи пунктьт ви безпроблемно и да избегнете солени глоби от проверяващите органи, се изисква софтуер от ново поколение. <strong>EasyGTP</strong> предоставя пълна сигурност на данниците, безупречен дигитален архив и бърза връзка с измервателната апаратура, спестявайки време и нерви на техническите специалисти.</p>
+            </article>
+
+            <!-- Статия 4: Съвети за бизнеса -->
+            <article class="article-card">
+                <span class="badge">Бизнес съвети</span>
+                <div class="meta">25 септември 2026 • 4 мин. четене</div>
+                <h2>5 стъпки за дигитализация на ГТП пункт, които носят повече печалба</h2>
+                <p>Управлението на пункт за годишни технически прегледи отдавна не е просто забиване на щампи и писане в хартиени дневници. Успешните пунктове залагат на пълна автоматизация.</p>
+                <p>Смяната на стари софтуерни решения със специализираната платформа на EasyGTP позволява на управителите да следят дневните приходи, броя на преминалите автомобили и натовареността на линиите само с един клик – от компютъра в офиса или дори през мобилен телефон.</p>
             </article>
 
         </div>
